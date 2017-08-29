@@ -1,1 +1,8 @@
 # gan_face_generation
+这是Udacity的深度学习课程中，关于GAN的作业项目。项目是需要使用GAN来生成人脸，使用的是celebA数据集，在floydhub上进行的训练。
+
+GAN的网络结构参照了DCGAN与WGAN。
+
+在做这个项目的过程中，遇到了不少问题。
+1. 在进行训练时，d_loss很快变成nan，g_loss变成0，通过show_generator_output看生成的结果是一片黑。查找问题，发现在batch_normalization层没有设置正确的training参数，以及需要添加`tf.control_dependencies(tf.get_collection(tf.GraphKeys.UPDATE_OPS))`，才能让bn层正确的运行。
+2. 对d_loss与g_loss的计算时，使用tf.nn.sigmoid_cross_entropy_with_logits时，训练生成的结果一直是无意义的图片。后面尝试使用WGAN计算loss的方法，去掉了sigmoid，添加了一项表示fake与real混合的值。达到现在的结果。
